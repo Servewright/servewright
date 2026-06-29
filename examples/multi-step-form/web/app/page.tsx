@@ -1,12 +1,5 @@
-import { HelloView, getHelloView } from "@/features/hello";
+import { SignupFormView } from "@/features/signup";
 
-export default async function HomePage() {
-  let initialView;
-  try {
-    initialView = await getHelloView();
-  } catch {
-    initialView = undefined;
-  }
-
-  return <HelloView initialView={initialView} />;
+export default function HomePage() {
+  return <SignupFormView />;
 }

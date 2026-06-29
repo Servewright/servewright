@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://servewright.io/spec/primitives/text-input.schema.json",
   "title": "TextInput",
-  "description": "Champ de saisie texte. Phase 2 : rendu inerte (valeur affichée, pas de binding actif).",
+  "description": "Champ de saisie texte avec binding local client et validation déclarative.",
   "type": "object",
   "required": ["id", "type", "props"],
   "properties": {
@@ -15,7 +15,31 @@
         "label": { "type": "string" },
         "value": { "type": "string" },
         "placeholder": { "type": "string" },
-        "required": { "type": "boolean", "default": false }
+        "required": { "type": "boolean", "default": false },
+        "minLength": { "type": "integer", "minimum": 0 },
+        "pattern": { "type": "string" },
+        "trigger": {
+          "type": "string",
+          "enum": ["onSubmit", "onBlur", "onChange"],
+          "default": "onBlur",
+          "description": "Politique de remontée serveur. Défaut onBlur."
+        },
+        "debounceMs": { "type": "integer", "minimum": 0 },
+        "asyncValidation": {
+          "type": "boolean",
+          "default": false,
+          "description": "Si true, déclenche une validation async serveur (onBlur)."
+        },
+        "errors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Erreurs de validation attachées au noeud (serveur → client)."
+        },
+        "validating": {
+          "type": "boolean",
+          "default": false,
+          "description": "État de validation async en cours."
+        }
       },
       "additionalProperties": false
     }

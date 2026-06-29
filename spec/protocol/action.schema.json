@@ -2,7 +2,32 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://servewright.io/spec/protocol/action.schema.json",
   "title": "Action",
-  "description": "Action client → serveur. Contrat à compléter en phase ultérieure.",
+  "description": "Action client → serveur. Canal unique POST /servewright/action.",
   "type": "object",
+  "required": ["type", "target", "screen", "stateVersion", "payload"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "Type sémantique d'action (ex. submit, asyncValidate)."
+    },
+    "target": {
+      "type": "string",
+      "description": "Cible de routing — identifiant actionTarget du Form/Group."
+    },
+    "screen": {
+      "type": "string",
+      "description": "Écran courant pour recharger le View de référence."
+    },
+    "stateVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Version d'état connue du client au moment de l'action."
+    },
+    "payload": {
+      "type": "object",
+      "description": "Valeurs des champs bornées au groupe/formulaire cible (clé = id du champ).",
+      "additionalProperties": true
+    }
+  },
   "additionalProperties": false
 }

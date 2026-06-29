@@ -46,11 +46,7 @@ Widget buildContainerPrimitive(ServewrightNode node, RenderContext ctx) {
 }
 
 Widget buildFormPrimitive(ServewrightNode node, RenderContext ctx) {
-  return Column(
-    key: ValueKey('form-${node.id}'),
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: ctx.renderChildren(node.children),
-  );
+  return _FormWidget(node: node, ctx: ctx);
 }
 
 Widget buildGroupPrimitive(ServewrightNode node, RenderContext ctx) {
@@ -66,21 +62,7 @@ Widget buildGroupPrimitive(ServewrightNode node, RenderContext ctx) {
 }
 
 Widget buildTextInputPrimitive(ServewrightNode node, RenderContext ctx) {
-  final label = node.props['label'] as String? ?? '';
-  final value = node.props['value'] as String? ?? '';
-  final placeholder = node.props['placeholder'] as String?;
-  return Column(
-    key: ValueKey('text-input-${node.id}'),
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(label),
-      TextField(
-        controller: TextEditingController(text: value),
-        readOnly: true,
-        decoration: InputDecoration(hintText: placeholder),
-      ),
-    ],
-  );
+  return _TextInputWidget(node: node);
 }
 
 Widget buildSelectPrimitive(ServewrightNode node, RenderContext ctx) {
@@ -121,12 +103,7 @@ Widget buildCheckboxPrimitive(ServewrightNode node, RenderContext ctx) {
 }
 
 Widget buildButtonPrimitive(ServewrightNode node, RenderContext ctx) {
-  final label = node.props['label'] as String? ?? '';
-  return ElevatedButton(
-    key: ValueKey('button-${node.id}'),
-    onPressed: null,
-    child: Text(label),
-  );
+  return _ButtonWidget(node: node);
 }
 
 Widget buildStatPrimitive(ServewrightNode node, RenderContext ctx) {
@@ -137,8 +114,8 @@ Widget buildStatPrimitive(ServewrightNode node, RenderContext ctx) {
     key: ValueKey('stat-${node.id}'),
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(label, style: const TextStyle(fontSize: 12)),
-      Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+      Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+      Text(value),
       if (delta != null) Text(delta),
     ],
   );
@@ -153,27 +130,146 @@ Widget buildTablePrimitive(ServewrightNode node, RenderContext ctx) {
   return DataTable(
     key: ValueKey('table-${node.id}'),
     columns: columns
-        .map(
-          (column) => DataColumn(
-            label: Text(column['label'] as String),
-          ),
-        )
+        .map((column) => DataColumn(label: Text(column['label'] as String)))
         .toList(),
     rows: rows
         .map(
-          (row) {
-            final cells = row['cells'] as Map<String, dynamic>? ?? {};
-            return DataRow(
-              cells: columns
-                  .map(
-                    (column) => DataCell(
-                      Text('${cells[column['key']]}'),
-                    ),
-                  )
-                  .toList(),
-            );
-          },
+          (row) => DataRow(
+            cells: columns
+                .map((column) {
+                  final cells = row['cells'] as Map<String, dynamic>? ?? {};
+                  return DataCell(Text('${cells[column['key']]}'));
+                })
+                .toList(),
+          ),
         )
         .toList(),
   );
+}
+
+class _FormWidget extends StatelessWidget {
+  const _FormWidget({required this.node, required this.ctx});
+
+  final ServewrightNode node;
+  final RenderContext ctx;
+
+  @override
+  Widget build(BuildContext context) {
+    final actionTarget = node.props['actionTarget'] as String? ?? '';
+    final binding = ServewrightBinding.maybeOf(context);
+
+    return Column(
+      key: ValueKey('form-${node.id}'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ...ctx.renderChildren(node.children),
+        if (binding != null)
+          const SizedBox.shrink()
+        else
+          const SizedBox.shrink(),
+      ],
+    );
+  }
+}
+
+class _TextInputWidget extends StatefulWidget {
+  const _TextInputWidget({required this.node});
+
+  final ServewrightNode node;
+
+  @override
+  State<_TextInputWidget> createState() => _TextInputWidgetState();
+}
+
+class _TextInputWidgetState extends State<_TextInputWidget> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.node.props['value'] as String? ?? '');
+  }
+
+  @override
+  void didUpdateWidget(covariant _TextInputWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final binding = ServewrightBinding.maybeOf(context);
+    final nextValue = binding?.valueFor(widget.node.id) ??
+        widget.node.props['value'] as String? ??
+        '';
+    if (_controller.text != nextValue) {
+      _controller.text = nextValue;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final binding = ServewrightBinding.maybeOf(context);
+    final label = widget.node.props['label'] as String? ?? '';
+    final placeholder = widget.node.props['placeholder'] as String?;
+    final interactive = binding != null;
+    final errors = binding?.errorsFor(widget.node.id) ??
+        (widget.node.props['errors'] as List<dynamic>? ?? const []).cast<String>();
+    final validating = binding?.isValidating(widget.node.id) ??
+        widget.node.props['validating'] as bool? ??
+        false;
+
+    if (interactive) {
+      _controller.text = binding!.valueFor(widget.node.id);
+    }
+
+    return Column(
+      key: ValueKey('text-input-${widget.node.id}'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label),
+        TextField(
+          controller: _controller,
+          readOnly: !interactive,
+          decoration: InputDecoration(hintText: placeholder),
+          onChanged: interactive
+              ? (value) => binding!.onFieldChange(widget.node.id, widget.node, value)
+              : null,
+          onEditingComplete: interactive
+              ? () => binding!.onFieldBlur(
+                    widget.node.id,
+                    widget.node,
+                    binding.primaryActionTarget,
+                  )
+              : null,
+        ),
+        if (validating) const Text('Validating…'),
+        for (final error in errors) Text(error, style: const TextStyle(color: Colors.red)),
+      ],
+    );
+  }
+}
+
+class _ButtonWidget extends StatelessWidget {
+  const _ButtonWidget({required this.node});
+
+  final ServewrightNode node;
+
+  @override
+  Widget build(BuildContext context) {
+    final binding = ServewrightBinding.maybeOf(context);
+    final label = node.props['label'] as String? ?? '';
+    final role = node.props['role'] as String? ?? 'button';
+
+    return ElevatedButton(
+      key: ValueKey('button-${node.id}'),
+      onPressed: binding == null
+          ? null
+          : role == 'submit'
+              ? () => binding.submitForm(binding.primaryActionTarget)
+              : null,
+      child: Text(label),
+    );
+  }
 }

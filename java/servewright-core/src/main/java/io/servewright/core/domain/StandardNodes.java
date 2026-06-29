@@ -38,6 +38,19 @@ public final class StandardNodes {
     }
 
     public static Node textInput(String id, String label, String value, String placeholder, boolean required) {
+        return textInput(id, label, value, placeholder, required, null, null, false, null);
+    }
+
+    public static Node textInput(
+            String id,
+            String label,
+            String value,
+            String placeholder,
+            boolean required,
+            Integer minLength,
+            String pattern,
+            boolean asyncValidation,
+            String trigger) {
         Map<String, Object> props = new LinkedHashMap<>();
         props.put("label", label);
         if (value != null) {
@@ -48,6 +61,18 @@ public final class StandardNodes {
         }
         if (required) {
             props.put("required", true);
+        }
+        if (minLength != null) {
+            props.put("minLength", minLength);
+        }
+        if (pattern != null) {
+            props.put("pattern", pattern);
+        }
+        if (asyncValidation) {
+            props.put("asyncValidation", true);
+        }
+        if (trigger != null && !trigger.isBlank()) {
+            props.put("trigger", trigger);
         }
         return new Node(id, "TextInput", props, List.of());
     }

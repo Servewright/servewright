@@ -47,4 +47,16 @@ public final class View {
     public Node root() {
         return root;
     }
+
+    public View withRoot(Node newRoot) {
+        return new View(servewrightVersion, schemaVersion, screen, stateVersion, newRoot);
+    }
+
+    public View withIncrementedStateVersion() {
+        return new View(servewrightVersion, schemaVersion, screen, stateVersion + 1, root);
+    }
+
+    public View withStateVersion(int newStateVersion) {
+        return new View(servewrightVersion, schemaVersion, screen, newStateVersion, root);
+    }
 }

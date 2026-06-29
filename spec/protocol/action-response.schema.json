@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://servewright.io/spec/protocol/action-response.schema.json",
+  "title": "ActionResponse",
+  "description": "Réponse d'une action. Phase 3 : View complet (pas de diff/SSE). Erreurs attachées aux noeuds par id.",
+  "type": "object",
+  "required": ["view"],
+  "properties": {
+    "view": {
+      "$ref": "view.schema.json"
+    }
+  },
+  "additionalProperties": false
+}

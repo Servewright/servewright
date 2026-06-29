@@ -29,7 +29,21 @@ public final class DemoViews {
                                                 "Email",
                                                 "",
                                                 "you@example.com",
-                                                true),
+                                                true,
+                                                null,
+                                                "^[^@]+@[^@]+\\.[^@]+$",
+                                                false,
+                                                "onBlur"),
+                                        StandardNodes.textInput(
+                                                "username",
+                                                "Username",
+                                                "",
+                                                "Choose a username",
+                                                true,
+                                                3,
+                                                null,
+                                                true,
+                                                "onBlur"),
                                         StandardNodes.button("submit", "Submit", "submit")))));
     }
 }
