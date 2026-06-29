@@ -1,0 +1,30 @@
+# JVM
+java/**/target/
+*.class
+*.jar
+!java/**/src/**/*.jar
+
+# Node / pnpm
+node_modules/
+.pnpm-store/
+js/**/dist/
+js/**/dist-test/
+*.tsbuildinfo
+.pnpm-store/
+
+# Dart / Flutter
+.dart_tool/
+.packages
+build/
+**/pubspec.lock
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+.DS_Store
+
+# Coverage
+coverage/
+*.lcov

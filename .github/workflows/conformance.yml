@@ -1,0 +1,26 @@
+name: Conformance CI
+
+on:
+  push:
+    paths:
+      - "spec/**"
+      - "java/**"
+      - "js/**"
+      - "dart/**"
+      - "conformance/**"
+  pull_request:
+    paths:
+      - "spec/**"
+      - "java/**"
+      - "js/**"
+      - "dart/**"
+      - "conformance/**"
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Conformance suite (stub)
+        run: echo "Conformance suite not yet implemented — Phase 0 stub."

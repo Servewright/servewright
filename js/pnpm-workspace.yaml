@@ -1,0 +1,5 @@
+packages:
+  - "servewright-react"
+  - "servewright-react-shadcn"
+allowBuilds:
+  esbuild: set this to true or false
