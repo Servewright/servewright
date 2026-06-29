@@ -1,7 +1,15 @@
 import { createElement, type ReactElement } from "react";
 import type { ServewrightNode, View } from "./types.js";
 
-export type PrimitiveComponent = (node: ServewrightNode) => ReactElement;
+export interface RenderContext {
+  renderChild: (node: ServewrightNode) => ReactElement;
+  renderChildren: (nodes?: ServewrightNode[]) => ReactElement[];
+}
+
+export type PrimitiveComponent = (
+  node: ServewrightNode,
+  ctx: RenderContext,
+) => ReactElement;
 
 export interface Registry {
   register(type: string, component: PrimitiveComponent): void;
@@ -31,7 +39,11 @@ export function createRenderer(registry: Registry): Renderer {
     if (!component) {
       return createUnknownPlaceholder(node);
     }
-    return component(node);
+    const ctx: RenderContext = {
+      renderChild: renderNode,
+      renderChildren: (nodes) => (nodes ?? []).map(renderNode),
+    };
+    return component(node, ctx);
   };
 
   return {

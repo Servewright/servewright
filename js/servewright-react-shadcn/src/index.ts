@@ -1,1 +1,13 @@
-export { createTextComponent, registerShadcnPrimitives } from "./text.js";
+export {
+  createTextComponent,
+  createContainerComponent,
+  createFormComponent,
+  createGroupComponent,
+  createTextInputComponent,
+  createSelectComponent,
+  createCheckboxComponent,
+  createButtonComponent,
+  createStatComponent,
+  createTableComponent,
+  registerShadcnPrimitives,
+} from "./primitives.js";

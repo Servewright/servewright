@@ -1,0 +1,9 @@
+{
+  "primitive": "Text",
+  "root": {
+    "id": "text-1",
+    "type": "Text",
+    "props": { "content": "Hello Text" }
+  },
+  "expect": { "contains": ["Hello Text"] }
+}

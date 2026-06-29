@@ -10,6 +10,7 @@ node_modules/
 .pnpm-store/
 js/**/dist/
 js/**/dist-test/
+conformance/dist/
 examples/**/dist/
 examples/**/.next/
 *.tsbuildinfo

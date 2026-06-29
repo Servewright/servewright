@@ -1,0 +1,20 @@
+{
+  "name": "@servewright/conformance",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "tsc -p tsconfig.json && node --test dist/conformance.test.js"
+  },
+  "dependencies": {
+    "@servewright/react": "workspace:*",
+    "@servewright/react-shadcn": "workspace:*",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "primitive": "Table",
+  "root": {
+    "id": "table-1",
+    "type": "Table",
+    "props": {
+      "columns": [
+        { "key": "name", "label": "Name" },
+        { "key": "role", "label": "Role" }
+      ],
+      "rows": [
+        { "cells": { "name": "Ada", "role": "Engineer" } }
+      ]
+    }
+  },
+  "expect": { "contains": ["Name", "Role", "Ada", "Engineer"] }
+}

@@ -33,4 +33,10 @@ public class ServewrightAutoConfiguration {
     public ViewQueryHandler servewrightViewQueryHandler(ViewResolver viewResolver) {
         return new ViewQueryHandler(viewResolver);
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public io.servewright.core.primitive.PrimitiveRegistry servewrightPrimitiveRegistry() {
+        return io.servewright.core.primitive.PrimitiveRegistry.withStandardPrimitives();
+    }
 }

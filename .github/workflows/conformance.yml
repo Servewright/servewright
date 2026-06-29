@@ -17,10 +17,43 @@ on:
       - "conformance/**"
 
 jobs:
-  conformance:
+  react:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Conformance suite (stub)
-        run: echo "Conformance suite not yet implemented — Phase 0 stub."
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build renderers
+        run: pnpm --filter @servewright/react --filter @servewright/react-shadcn build
+
+      - name: Run React conformance
+        run: pnpm --filter @servewright/conformance test
+
+  flutter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Run Flutter conformance
+        working-directory: dart/servewright_flutter
+        run: flutter test test/conformance_test.dart

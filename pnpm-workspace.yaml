@@ -2,6 +2,7 @@ packages:
   - "js/servewright-react"
   - "js/servewright-react-shadcn"
   - "examples/multi-step-form/web"
+  - "conformance"
 
 allowBuilds:
   esbuild: true

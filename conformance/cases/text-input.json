@@ -1,0 +1,9 @@
+{
+  "primitive": "TextInput",
+  "root": {
+    "id": "input-1",
+    "type": "TextInput",
+    "props": { "label": "Username", "placeholder": "Enter name" }
+  },
+  "expect": { "contains": ["Username", "Enter name"] }
+}

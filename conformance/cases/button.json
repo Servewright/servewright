@@ -1,0 +1,9 @@
+{
+  "primitive": "Button",
+  "root": {
+    "id": "button-1",
+    "type": "Button",
+    "props": { "label": "Save", "role": "submit" }
+  },
+  "expect": { "contains": ["Save"] }
+}

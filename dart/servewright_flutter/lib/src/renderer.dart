@@ -1,7 +1,16 @@
 import 'package:flutter/widgets.dart';
 import 'package:servewright_flutter/src/types.dart';
 
-typedef PrimitiveBuilder = Widget Function(ServewrightNode node);
+class RenderContext {
+  const RenderContext({required this.renderChild});
+
+  final Widget Function(ServewrightNode node) renderChild;
+
+  List<Widget> renderChildren(List<ServewrightNode> nodes) =>
+      nodes.map(renderChild).toList();
+}
+
+typedef PrimitiveBuilder = Widget Function(ServewrightNode node, RenderContext ctx);
 
 class Registry {
   final Map<String, PrimitiveBuilder> _builders = {};
@@ -25,7 +34,7 @@ class Renderer {
     if (builder == null) {
       return _unknownPlaceholder(node);
     }
-    return builder(node);
+    return builder(node, RenderContext(renderChild: _renderNode));
   }
 
   Widget _unknownPlaceholder(ServewrightNode node) {

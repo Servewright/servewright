@@ -5,4 +5,5 @@ export {
   type Registry,
   type Renderer,
   type PrimitiveComponent,
+  type RenderContext,
 } from "./renderer.js";

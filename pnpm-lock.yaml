@@ -15,6 +15,34 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
+  conformance:
+    dependencies:
+      '@servewright/react':
+        specifier: workspace:*
+        version: link:../js/servewright-react
+      '@servewright/react-shadcn':
+        specifier: workspace:*
+        version: link:../js/servewright-react-shadcn
+      react:
+        specifier: ^19.1.0
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      '@types/node':
+        specifier: ^22.15.0
+        version: 22.20.0
+      '@types/react':
+        specifier: ^19.1.0
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19.1.0
+        version: 19.2.3(@types/react@19.2.17)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
   examples/multi-step-form/web:
     dependencies:
       '@servewright/react':
@@ -48,6 +76,9 @@ importers:
 
   js/servewright-react:
     devDependencies:
+      '@servewright/react-shadcn':
+        specifier: workspace:*
+        version: link:../servewright-react-shadcn
       '@types/node':
         specifier: ^22.15.0
         version: 22.20.0

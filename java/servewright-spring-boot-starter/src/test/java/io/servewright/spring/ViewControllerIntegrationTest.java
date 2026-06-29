@@ -33,17 +33,36 @@ class ViewControllerIntegrationTest {
 
     private static JsonSchema viewSchema;
     private static JsonSchema textSchema;
+    private static JsonSchema formSchema;
 
     @BeforeAll
     static void loadSchemas() throws Exception {
         JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012);
         viewSchema = factory.getSchema(readResource("/spec/protocol/view.schema.json"));
         textSchema = factory.getSchema(readResource("/spec/primitives/text.schema.json"));
+        formSchema = factory.getSchema(readResource("/spec/primitives/form.schema.json"));
     }
 
     @Test
     void getHelloViewReturnsSchemaConformantJson() throws Exception {
-        String body = mockMvc.perform(get("/servewright/view/hello"))
+        assertViewConforms("/servewright/view/hello", textSchema);
+    }
+
+    @Test
+    void getDemoFormReturnsCompositeSchemaConformantJson() throws Exception {
+        String body = mockMvc.perform(get("/servewright/view/demo-form"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode document = objectMapper.readTree(body);
+        assertTrue(viewSchema.validate(document).isEmpty());
+        assertTrue(formSchema.validate(document.get("root")).isEmpty());
+    }
+
+    private void assertViewConforms(String path, JsonSchema rootSchema) throws Exception {
+        String body = mockMvc.perform(get(path))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -54,8 +73,8 @@ class ViewControllerIntegrationTest {
         Set<ValidationMessage> viewErrors = viewSchema.validate(document);
         assertTrue(viewErrors.isEmpty(), () -> "view schema errors: " + viewErrors);
 
-        Set<ValidationMessage> textErrors = textSchema.validate(document.get("root"));
-        assertTrue(textErrors.isEmpty(), () -> "text schema errors: " + textErrors);
+        Set<ValidationMessage> rootErrors = rootSchema.validate(document.get("root"));
+        assertTrue(rootErrors.isEmpty(), () -> "root schema errors: " + rootErrors);
     }
 
     private static InputStream readResource(String path) throws Exception {

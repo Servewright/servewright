@@ -1,0 +1,9 @@
+{
+  "primitive": "Checkbox",
+  "root": {
+    "id": "checkbox-1",
+    "type": "Checkbox",
+    "props": { "label": "Accept terms", "checked": true }
+  },
+  "expect": { "contains": ["Accept terms"] }
+}

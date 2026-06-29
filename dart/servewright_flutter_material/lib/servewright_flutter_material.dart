@@ -1,3 +1,3 @@
 library;
 
-export 'text.dart';
+export 'primitives.dart';

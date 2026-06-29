@@ -1,0 +1,12 @@
+{
+  "primitive": "Form",
+  "root": {
+    "id": "form-1",
+    "type": "Form",
+    "props": { "actionTarget": "demo" },
+    "children": [
+      { "id": "field", "type": "TextInput", "props": { "label": "Name" } }
+    ]
+  },
+  "expect": { "contains": ["Name"] }
+}

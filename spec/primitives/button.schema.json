@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://servewright.io/spec/primitives/button.schema.json",
+  "title": "Button",
+  "description": "Bouton sémantique. Phase 2 : rendu inerte (pas de dispatch d'action).",
+  "type": "object",
+  "required": ["id", "type", "props"],
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "const": "Button" },
+    "props": {
+      "type": "object",
+      "required": ["label"],
+      "properties": {
+        "label": { "type": "string" },
+        "role": {
+          "type": "string",
+          "enum": ["button", "submit"],
+          "default": "button",
+          "description": "Rôle sémantique, pas le style visuel."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

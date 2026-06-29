@@ -4,6 +4,7 @@ import io.servewright.core.domain.Node;
 import io.servewright.core.domain.View;
 import io.servewright.core.port.ViewSerializer;
 
+import java.util.List;
 import java.util.Map;
 
 public final class JsonViewSerializer implements ViewSerializer {
@@ -53,7 +54,44 @@ public final class JsonViewSerializer implements ViewSerializer {
             if (index++ > 0) {
                 json.append(',');
             }
-            appendField(json, entry.getKey(), String.valueOf(entry.getValue()));
+            json.append('"').append(escape(entry.getKey())).append("\":");
+            appendValue(json, entry.getValue());
+        }
+        json.append('}');
+    }
+
+    private void appendValue(StringBuilder json, Object value) {
+        switch (value) {
+            case null -> json.append("null");
+            case String string -> json.append('"').append(escape(string)).append('"');
+            case Boolean booleanValue -> json.append(booleanValue);
+            case Number number -> json.append(number);
+            case List<?> list -> appendList(json, list);
+            case Map<?, ?> map -> appendMap(json, map);
+            default -> json.append('"').append(escape(String.valueOf(value))).append('"');
+        }
+    }
+
+    private void appendList(StringBuilder json, List<?> list) {
+        json.append('[');
+        for (int i = 0; i < list.size(); i++) {
+            if (i > 0) {
+                json.append(',');
+            }
+            appendValue(json, list.get(i));
+        }
+        json.append(']');
+    }
+
+    private void appendMap(StringBuilder json, Map<?, ?> map) {
+        json.append('{');
+        int index = 0;
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            if (index++ > 0) {
+                json.append(',');
+            }
+            json.append('"').append(escape(String.valueOf(entry.getKey()))).append("\":");
+            appendValue(json, entry.getValue());
         }
         json.append('}');
     }

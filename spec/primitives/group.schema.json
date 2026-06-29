@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://servewright.io/spec/primitives/group.schema.json",
+  "title": "Group",
+  "description": "Regroupement sémantique de champs (section, fieldset logique).",
+  "type": "object",
+  "required": ["id", "type", "props", "children"],
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "const": "Group" },
+    "props": {
+      "type": "object",
+      "properties": {
+        "label": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "children": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "object" }
+    }
+  },
+  "additionalProperties": false
+}

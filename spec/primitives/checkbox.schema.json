@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://servewright.io/spec/primitives/checkbox.schema.json",
+  "title": "Checkbox",
+  "description": "Case à cocher sémantique. Phase 2 : rendu inerte.",
+  "type": "object",
+  "required": ["id", "type", "props"],
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "const": "Checkbox" },
+    "props": {
+      "type": "object",
+      "required": ["label"],
+      "properties": {
+        "label": { "type": "string" },
+        "checked": { "type": "boolean", "default": false }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,12 @@
+{
+  "primitive": "Container",
+  "root": {
+    "id": "container-1",
+    "type": "Container",
+    "props": { "layout": "vertical" },
+    "children": [
+      { "id": "child-text", "type": "Text", "props": { "content": "Inside Container" } }
+    ]
+  },
+  "expect": { "contains": ["Inside Container"] }
+}

@@ -1,0 +1,16 @@
+{
+  "primitive": "Select",
+  "root": {
+    "id": "select-1",
+    "type": "Select",
+    "props": {
+      "label": "Country",
+      "value": "fr",
+      "options": [
+        { "value": "fr", "label": "France" },
+        { "value": "be", "label": "Belgium" }
+      ]
+    }
+  },
+  "expect": { "contains": ["Country", "France"] }
+}

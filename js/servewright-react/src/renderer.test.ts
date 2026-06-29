@@ -8,6 +8,7 @@ import {
   type PrimitiveComponent,
 } from "./renderer.js";
 import type { View } from "./types.js";
+import { registerShadcnPrimitives } from "@servewright/react-shadcn";
 
 const textComponent: PrimitiveComponent = (node) =>
   createElement("p", { "data-servewright-id": node.id }, String(node.props.content));
@@ -51,5 +52,49 @@ describe("createRenderer", () => {
 
     assert.match(markup, /Unknown primitive: FutureWidget/);
     assert.match(markup, /data-servewright-unknown="FutureWidget"/);
+  });
+
+  it("renders nested composition hierarchy", () => {
+    const registry = createRegistry();
+    registerShadcnPrimitives(registry);
+    const renderer = createRenderer(registry);
+
+    const compositeView: View = {
+      ...helloView,
+      screen: "demo-form",
+      root: {
+        id: "signup-form",
+        type: "Form",
+        props: { actionTarget: "signup" },
+        children: [
+          {
+            id: "personal-group",
+            type: "Group",
+            props: { label: "Personal" },
+            children: [
+              {
+                id: "email",
+                type: "TextInput",
+                props: { label: "Email", placeholder: "you@example.com" },
+              },
+              {
+                id: "submit",
+                type: "Button",
+                props: { label: "Submit", role: "submit" },
+              },
+            ],
+          },
+        ],
+      },
+    };
+
+    const markup = renderToStaticMarkup(renderer.render(compositeView));
+
+    assert.match(markup, /data-servewright-type="Form"/);
+    assert.match(markup, /data-servewright-type="Group"/);
+    assert.match(markup, /data-servewright-type="TextInput"/);
+    assert.match(markup, /data-servewright-type="Button"/);
+    assert.match(markup, /Personal/);
+    assert.match(markup, /Submit/);
   });
 });

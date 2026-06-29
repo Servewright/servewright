@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://servewright.io/spec/primitives/select.schema.json",
+  "title": "Select",
+  "description": "Liste déroulante sémantique. Phase 2 : rendu inerte.",
+  "type": "object",
+  "required": ["id", "type", "props"],
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "const": "Select" },
+    "props": {
+      "type": "object",
+      "required": ["label", "options"],
+      "properties": {
+        "label": { "type": "string" },
+        "value": { "type": "string" },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["value", "label"],
+            "properties": {
+              "value": { "type": "string" },
+              "label": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

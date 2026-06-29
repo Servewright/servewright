@@ -1,0 +1,9 @@
+{
+  "primitive": "Stat",
+  "root": {
+    "id": "stat-1",
+    "type": "Stat",
+    "props": { "label": "Revenue", "value": "€1.2M", "delta": "+8%" }
+  },
+  "expect": { "contains": ["Revenue", "€1.2M", "+8%"] }
+}

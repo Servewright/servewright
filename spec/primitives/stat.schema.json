@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://servewright.io/spec/primitives/stat.schema.json",
+  "title": "Stat",
+  "description": "Indicateur chiffré en lecture seule (KPI, métrique).",
+  "type": "object",
+  "required": ["id", "type", "props"],
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "const": "Stat" },
+    "props": {
+      "type": "object",
+      "required": ["label", "value"],
+      "properties": {
+        "label": { "type": "string" },
+        "value": { "type": "string" },
+        "delta": { "type": "string", "description": "Variation sémantique, ex: '+12%'." }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

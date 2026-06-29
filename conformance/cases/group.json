@@ -1,0 +1,12 @@
+{
+  "primitive": "Group",
+  "root": {
+    "id": "group-1",
+    "type": "Group",
+    "props": { "label": "Section" },
+    "children": [
+      { "id": "field", "type": "TextInput", "props": { "label": "Email" } }
+    ]
+  },
+  "expect": { "contains": ["Section", "Email"] }
+}
