@@ -1,0 +1,44 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://servewright.io/spec/protocol/view.schema.json",
+    "title": "View",
+    "description": "Arbre UI initial servi par le serveur. Cacheable (ETag sur schemaVersion+stateVersion).",
+    "type": "object",
+    "required": ["servewrightVersion", "schemaVersion", "screen", "stateVersion", "root"],
+    "properties": {
+      "servewrightVersion": {
+        "type": "string",
+        "description": "Version du protocole (forme des messages). Ex: '1.0'."
+      },
+      "schemaVersion": {
+        "type": "string",
+        "description": "Version du set de primitives serveur (semver). Gère la compat avec les clients déployés."
+      },
+      "screen": { "type": "string" },
+      "stateVersion": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Entier monotone. Point d'ancrage du resync."
+      },
+      "root": {
+        "description": "Noeud racine de l'arbre UI.",
+        "$ref": "#/$defs/node"
+      }
+    },
+    "additionalProperties": false,
+    "$defs": {
+      "node": {
+        "type": "object",
+        "required": ["id", "type", "props"],
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "props": { "type": "object" },
+          "children": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/node" }
+          }
+        }
+      }
+    }
+  }

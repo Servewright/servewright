@@ -1,0 +1,30 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://servewright.io/spec/primitives/text.schema.json",
+    "title": "Text",
+    "description": "Affichage de texte en lecture seule. Primitive sémantique : décrit le contenu et son emphase, jamais le style concret.",
+    "type": "object",
+    "required": ["id", "type", "props"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Identifiant stable et unique dans l'arbre. Clé de réconciliation des patchs."
+      },
+      "type": { "const": "Text" },
+      "props": {
+        "type": "object",
+        "required": ["content"],
+        "properties": {
+          "content": { "type": "string" },
+          "emphasis": {
+            "type": "string",
+            "enum": ["body", "heading", "caption", "muted"],
+            "default": "body",
+            "description": "Rôle sémantique. Le rendu typographique concret est décidé côté client."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": false
+  }
