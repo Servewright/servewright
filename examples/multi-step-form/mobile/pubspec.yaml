@@ -1,0 +1,25 @@
+name: multi_step_form_mobile
+description: Servewright hello example (Flutter).
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.4.0
+  servewright_flutter:
+    path: ../../../dart/servewright_flutter
+  servewright_flutter_material:
+    path: ../../../dart/servewright_flutter_material
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

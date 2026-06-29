@@ -1,2 +1,8 @@
-/** Servewright React renderer engine — Phase 0 placeholder. */
-export const SERVEWRIGHT_REACT_VERSION = "0.1.0";
+export type { View, ServewrightNode, TextProps, TextEmphasis, NodeProps } from "./types.js";
+export {
+  createRegistry,
+  createRenderer,
+  type Registry,
+  type Renderer,
+  type PrimitiveComponent,
+} from "./renderer.js";

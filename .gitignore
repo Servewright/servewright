@@ -1,5 +1,6 @@
 # JVM
 java/**/target/
+examples/**/target/
 *.class
 *.jar
 !java/**/src/**/*.jar
@@ -9,6 +10,7 @@ node_modules/
 .pnpm-store/
 js/**/dist/
 js/**/dist-test/
+examples/**/dist/
 *.tsbuildinfo
 .pnpm-store/
 
