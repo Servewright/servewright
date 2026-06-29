@@ -1,0 +1,9 @@
+packages:
+  - "js/servewright-react"
+  - "js/servewright-react-shadcn"
+  - "examples/multi-step-form/web"
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  "@parcel/watcher": true

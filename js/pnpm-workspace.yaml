@@ -1,6 +1,0 @@
-packages:
-  - "servewright-react"
-  - "servewright-react-shadcn"
-  - "../examples/multi-step-form/web"
-allowBuilds:
-  esbuild: set this to true or false

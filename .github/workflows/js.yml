@@ -4,18 +4,23 @@ on:
   push:
     paths:
       - "js/**"
+      - "examples/multi-step-form/web/**"
       - "spec/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "package.json"
   pull_request:
     paths:
       - "js/**"
+      - "examples/multi-step-form/web/**"
       - "spec/**"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "package.json"
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: js
     steps:
       - uses: actions/checkout@v4
 
@@ -29,7 +34,7 @@ jobs:
         with:
           node-version: "22"
           cache: pnpm
-          cache-dependency-path: js/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

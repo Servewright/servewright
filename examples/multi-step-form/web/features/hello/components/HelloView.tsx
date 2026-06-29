@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useMemo, useState } from "react";
 import {
   createRegistry,
@@ -6,8 +8,12 @@ import {
 } from "@servewright/react";
 import { registerShadcnPrimitives } from "@servewright/react-shadcn";
 
-export function App() {
-  const [view, setView] = useState<View | null>(null);
+type HelloViewProps = {
+  initialView?: View;
+};
+
+export function HelloView({ initialView }: HelloViewProps) {
+  const [view, setView] = useState<View | null>(initialView ?? null);
   const [error, setError] = useState<string | null>(null);
 
   const renderer = useMemo(() => {
@@ -17,7 +23,13 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    fetch("/servewright/view/hello")
+    if (initialView) {
+      return;
+    }
+
+    const controller = new AbortController();
+
+    fetch("/servewright/view/hello", { signal: controller.signal })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
@@ -26,9 +38,14 @@ export function App() {
       })
       .then(setView)
       .catch((cause: unknown) => {
+        if (cause instanceof DOMException && cause.name === "AbortError") {
+          return;
+        }
         setError(cause instanceof Error ? cause.message : "Unknown error");
       });
-  }, []);
+
+    return () => controller.abort();
+  }, [initialView]);
 
   if (error) {
     return <p role="alert">Failed to load view: {error}</p>;

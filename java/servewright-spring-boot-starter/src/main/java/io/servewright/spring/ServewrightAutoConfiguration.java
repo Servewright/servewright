@@ -1,28 +1,36 @@
 package io.servewright.spring;
 
-import io.servewright.core.Node;
-import io.servewright.core.Serializer;
-import io.servewright.core.View;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.servewright.core.application.port.ViewResolver;
+import io.servewright.core.application.query.ViewQueryHandler;
+import io.servewright.core.port.ViewSerializer;
+import io.servewright.spring.adapter.inbound.web.ServewrightViewEndpoint;
+import io.servewright.spring.adapter.outbound.DefaultViewResolver;
+import io.servewright.spring.adapter.outbound.JacksonViewSerializer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @AutoConfiguration
-@ComponentScan(basePackageClasses = ViewController.class)
+@ComponentScan(basePackageClasses = ServewrightViewEndpoint.class)
 public class ServewrightAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public Serializer servewrightSerializer(ObjectMapper objectMapper) {
+    public ViewSerializer servewrightViewSerializer(ObjectMapper objectMapper) {
         return new JacksonViewSerializer(objectMapper);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ViewSupplier servewrightViewSupplier() {
-        return screen -> View.of(screen, Node.text("greeting", "Bonjour"));
+    public ViewResolver servewrightViewResolver() {
+        return new DefaultViewResolver();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ViewQueryHandler servewrightViewQueryHandler(ViewResolver viewResolver) {
+        return new ViewQueryHandler(viewResolver);
     }
 }

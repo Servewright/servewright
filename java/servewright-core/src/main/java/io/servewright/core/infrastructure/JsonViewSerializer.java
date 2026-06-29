@@ -1,8 +1,12 @@
-package io.servewright.core;
+package io.servewright.core.infrastructure;
+
+import io.servewright.core.domain.Node;
+import io.servewright.core.domain.View;
+import io.servewright.core.port.ViewSerializer;
 
 import java.util.Map;
 
-public final class JsonSerializer implements Serializer {
+public final class JsonViewSerializer implements ViewSerializer {
 
     @Override
     public String serialize(View view) {

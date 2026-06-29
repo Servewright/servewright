@@ -1,4 +1,4 @@
-package io.servewright.core;
+package io.servewright.core.domain;
 
 import java.util.LinkedHashMap;
 import java.util.List;

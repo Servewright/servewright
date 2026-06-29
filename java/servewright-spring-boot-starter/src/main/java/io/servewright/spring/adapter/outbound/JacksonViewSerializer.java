@@ -1,15 +1,15 @@
-package io.servewright.spring;
+package io.servewright.spring.adapter.outbound;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.servewright.core.Node;
-import io.servewright.core.Serializer;
-import io.servewright.core.View;
+import io.servewright.core.domain.Node;
+import io.servewright.core.domain.View;
+import io.servewright.core.port.ViewSerializer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class JacksonViewSerializer implements Serializer {
+public final class JacksonViewSerializer implements ViewSerializer {
 
     private final ObjectMapper objectMapper;
 

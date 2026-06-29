@@ -6,11 +6,16 @@ import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
+import io.servewright.core.application.query.GetViewQuery;
+import io.servewright.core.application.query.ViewQueryHandler;
+import io.servewright.core.domain.Node;
+import io.servewright.core.domain.View;
+import io.servewright.core.infrastructure.JsonViewSerializer;
+import io.servewright.core.port.ViewSerializer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ViewSerializationTest {
 
-    private static final Serializer SERIALIZER = new JsonSerializer();
+    private static final ViewSerializer SERIALIZER = new JsonViewSerializer();
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static JsonSchema viewSchema;
     private static JsonSchema textSchema;
@@ -52,6 +57,17 @@ class ViewSerializationTest {
 
         Set<ValidationMessage> textErrors = textSchema.validate(document.get("root"));
         assertTrue(textErrors.isEmpty(), () -> "text schema errors: " + textErrors);
+    }
+
+    @Test
+    void viewQueryHandlerResolvesViewThroughPort() {
+        ViewQueryHandler handler = new ViewQueryHandler(
+                screen -> View.of(screen, Node.text("greeting", "Bonjour")));
+
+        View view = handler.handle(new GetViewQuery("hello"));
+
+        assertEquals("hello", view.screen());
+        assertEquals("Bonjour", view.root().props().get("content"));
     }
 
     private static InputStream readResource(String path) throws Exception {
