@@ -1,0 +1,31 @@
+{
+  "name": "transition setLoading patch",
+  "initialView": {
+    "servewrightVersion": "1.0",
+    "schemaVersion": "0.1.0",
+    "screen": "demo-form",
+    "stateVersion": 0,
+    "root": {
+      "id": "signup-form",
+      "type": "Form",
+      "props": { "actionTarget": "signup" },
+      "children": [
+        {
+          "id": "username",
+          "type": "TextInput",
+          "props": { "label": "Username", "value": "" }
+        }
+      ]
+    }
+  },
+  "transitions": [
+    {
+      "basedOn": 0,
+      "stateVersion": 1,
+      "patches": [
+        { "op": "setLoading", "target": "username", "loading": true }
+      ]
+    }
+  ],
+  "expect": { "contains": ["Validating"] }
+}

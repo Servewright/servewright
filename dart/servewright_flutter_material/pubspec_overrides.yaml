@@ -1,0 +1,3 @@
+dependency_overrides:
+  servewright_flutter:
+    path: ../servewright_flutter

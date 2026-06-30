@@ -1,0 +1,39 @@
+{
+  "name": "transition replace patch",
+  "initialView": {
+    "servewrightVersion": "1.0",
+    "schemaVersion": "0.1.0",
+    "screen": "demo-form",
+    "stateVersion": 0,
+    "root": {
+      "id": "signup-form",
+      "type": "Form",
+      "props": { "actionTarget": "signup" },
+      "children": [
+        {
+          "id": "submit",
+          "type": "Button",
+          "props": { "label": "Submit", "role": "submit" }
+        }
+      ]
+    }
+  },
+  "transitions": [
+    {
+      "basedOn": 0,
+      "stateVersion": 1,
+      "patches": [
+        {
+          "op": "replace",
+          "target": "submit",
+          "node": {
+            "id": "submit",
+            "type": "Button",
+            "props": { "label": "Retry", "role": "submit" }
+          }
+        }
+      ]
+    }
+  ],
+  "expect": { "contains": ["Retry"], "notContains": ["Submit"] }
+}

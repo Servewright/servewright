@@ -1,0 +1,10 @@
+{
+  "primitive": "Text",
+  "schemaVersion": "99.0.0",
+  "root": {
+    "id": "greeting",
+    "type": "Text",
+    "props": { "content": "Still works" }
+  },
+  "expect": { "contains": ["Still works"] }
+}

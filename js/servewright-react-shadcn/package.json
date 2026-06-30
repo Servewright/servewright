@@ -2,6 +2,11 @@
   "name": "@servewright/react-shadcn",
   "version": "0.1.0",
   "description": "Servewright React shadcn adapter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Servewright/servewright.git",
+    "directory": "js/servewright-react-shadcn"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -1,0 +1,40 @@
+{
+  "name": "transition insert patch",
+  "initialView": {
+    "servewrightVersion": "1.0",
+    "schemaVersion": "0.1.0",
+    "screen": "demo-form",
+    "stateVersion": 0,
+    "root": {
+      "id": "fields-group",
+      "type": "Group",
+      "props": { "label": "Fields" },
+      "children": [
+        {
+          "id": "email",
+          "type": "TextInput",
+          "props": { "label": "Email", "value": "" }
+        }
+      ]
+    }
+  },
+  "transitions": [
+    {
+      "basedOn": 0,
+      "stateVersion": 1,
+      "patches": [
+        {
+          "op": "insert",
+          "parent": "fields-group",
+          "index": 1,
+          "node": {
+            "id": "username",
+            "type": "TextInput",
+            "props": { "label": "Username", "value": "" }
+          }
+        }
+      ]
+    }
+  ],
+  "expect": { "contains": ["Email", "Username"] }
+}

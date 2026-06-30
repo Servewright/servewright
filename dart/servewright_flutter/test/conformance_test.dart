@@ -17,7 +17,10 @@ void main() {
       .whereType<File>()
       .where((entry) => entry.path.endsWith('.json'))) {
     final testCase = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
-    final expected = (testCase['expect'] as Map<String, dynamic>)['contains'] as List<dynamic>;
+    final expectations = testCase['expect'] as Map<String, dynamic>;
+    final expected = (expectations['contains'] as List<dynamic>?) ?? [];
+    final notExpected = (expectations['notContains'] as List<dynamic>?) ?? [];
+    final semanticsLabels = (expectations['semanticsLabels'] as List<dynamic>?) ?? [];
     final fileName = file.uri.pathSegments.last;
 
     if (testCase.containsKey('initialView')) {
@@ -33,7 +36,13 @@ void main() {
         );
 
         for (final text in expected) {
-          expect(find.text('$text'), findsWidgets);
+          expect(find.textContaining('$text'), findsWidgets);
+        }
+        for (final text in notExpected) {
+          expect(find.text('$text'), findsNothing);
+        }
+        for (final label in semanticsLabels) {
+          expect(find.bySemanticsLabel('$label'), findsWidgets);
         }
       });
       continue;
@@ -45,7 +54,7 @@ void main() {
     testWidgets('conformance flutter renders $primitive ($fileName)', (tester) async {
       final view = ServewrightView(
         servewrightVersion: '1.0',
-        schemaVersion: '0.1.0',
+        schemaVersion: testCase['schemaVersion'] as String? ?? '0.1.0',
         screen: 'conformance',
         stateVersion: 0,
         root: ServewrightNode.fromJson(rootJson),
@@ -56,7 +65,13 @@ void main() {
       );
 
       for (final text in expected) {
-        expect(find.text('$text'), findsWidgets);
+        expect(find.textContaining('$text'), findsWidgets);
+      }
+      for (final text in notExpected) {
+        expect(find.text('$text'), findsNothing);
+      }
+      for (final label in semanticsLabels) {
+        expect(find.bySemanticsLabel('$label'), findsWidgets);
       }
     });
   }

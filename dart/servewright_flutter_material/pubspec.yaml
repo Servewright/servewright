@@ -1,7 +1,8 @@
 name: servewright_flutter_material
-description: Servewright Flutter Material adapter.
+description: Servewright Flutter Material design-system adapter for semantic primitives.
 version: 0.1.0
-publish_to: none
+repository: https://github.com/Servewright/servewright
+homepage: https://github.com/Servewright/servewright/tree/main/dart/servewright_flutter_material
 
 environment:
   sdk: ^3.6.0
@@ -10,8 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  servewright_flutter:
-    path: ../servewright_flutter
+  servewright_flutter: ^0.1.0
 
 dev_dependencies:
   flutter_test:

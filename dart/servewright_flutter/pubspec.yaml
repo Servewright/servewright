@@ -1,7 +1,8 @@
 name: servewright_flutter
-description: Servewright Flutter renderer engine.
+description: Servewright Flutter renderer engine — semantic SDUI registry, renderer, binding, and transitions.
 version: 0.1.0
-publish_to: none
+repository: https://github.com/Servewright/servewright
+homepage: https://github.com/Servewright/servewright/tree/main/dart/servewright_flutter
 
 environment:
   sdk: ^3.6.0

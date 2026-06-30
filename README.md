@@ -2,38 +2,53 @@
 
 > Server-Driven UI. Le serveur écrit la pièce, le client la joue.
 
-Servewright est une librairie open source de Server-Driven UI : un **contrat sémantique unique**, piloté par le backend, rendu nativement sur plusieurs clients (React, Flutter) avec le **design system de leur choix**.
+Servewright is an open-source **Server-Driven UI** library: one **semantic contract**, driven by the backend, rendered natively on React and Flutter with **your design system**.
 
-Le serveur décrit *ce que* l'UI est et *ce qu'elle fait* — jamais à quoi elle ressemble. Les clients mappent les primitives sémantiques vers leurs propres composants. Changez l'UI côté serveur ; les clients suivent, sans redéploiement.
+The server describes *what* the UI is and *what it does* — never how it looks. Clients map semantic primitives to their own components. Change UI on the server; clients follow without redeployment.
 
-## Statut
+## Status
 
-🚧 **En conception.** L'architecture est figée, le code démarre.
+**V1 complete** — primitives, actions, validation, transitions (SSE), conformance suite, publishable packages.
 
-- [`ARCHITECTURE.md`](./ARCHITECTURE.md) — décisions de conception et règle d'or sémantique.
-- [`ROADMAP.md`](./ROADMAP.md) — périmètre V1 / V2 / V3 et discipline de scope.
-- [`BRANDING.md`](./BRANDING.md) — identité visuelle et design system.
+| Doc | Purpose |
+|-----|---------|
+| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Design decisions |
+| [`ROADMAP.md`](./ROADMAP.md) | V1 / V2 / V3 scope |
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Contributor guide |
+| [`docs/golden-path.md`](./docs/golden-path.md) | Add a primitive end-to-end |
+| [`docs/threat-model.md`](./docs/threat-model.md) | Security considerations |
 
-## Principe en une image
+## Quick start
+
+```bash
+# Verify all ecosystems
+mvn -f java/pom.xml verify
+pnpm -r build && pnpm -r test
+cd dart/servewright_flutter && flutter test
+
+# Demo (Java server + React or Flutter client)
+mvn -f java/pom.xml -pl servewright-spring-boot-starter spring-boot:run
+```
+
+## Protocol flow
 
 ```
-GET /servewright/view/{screen}   →  arbre UI sémantique (JSON)
-[interaction client]             →  POST /servewright/action  (intention nommée)
-[machine à états serveur]        →  SSE: transition (patch ciblé par id)
-[client]                         →  applique le patch, rend avec son design system
+GET /servewright/view/{screen}   →  semantic UI tree (JSON)
+POST /servewright/action         →  named intent + payload
+GET /servewright/stream/{screen} →  SSE transitions (patches by node id)
 ```
 
-## Écosystèmes
+## Packages
 
-| Package | Registre |
-|---|---|
-| `io.servewright:servewright-core` | Maven Central |
-| `io.servewright:servewright-spring-boot-starter` | Maven Central |
+| Package | Registry |
+|---------|----------|
+| `io.servewright:servewright-core` | Maven |
+| `io.servewright:servewright-spring-boot-starter` | Maven |
 | `@servewright/react` | npm |
 | `@servewright/react-shadcn` | npm |
 | `servewright_flutter` | pub.dev |
 | `servewright_flutter_material` | pub.dev |
 
-## Licence
+## License
 
-Apache-2.0.
+Apache-2.0

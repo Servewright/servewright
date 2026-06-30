@@ -136,6 +136,42 @@ class TransitionApplier {
               .map((child) => _applyPatch(child, patch, dirtyFields))
               .toList(),
         );
+      case 'insert':
+        final parent = patch['parent'] as String;
+        final index = patch['index'] as int;
+        final inserted = ServewrightNode.fromJson(patch['node'] as Map<String, dynamic>);
+        if (node.id == parent) {
+          final children = List<ServewrightNode>.from(node.children);
+          children.insert(index, inserted);
+          return ServewrightNode(
+            id: node.id,
+            type: node.type,
+            props: node.props,
+            children: children,
+          );
+        }
+        return ServewrightNode(
+          id: node.id,
+          type: node.type,
+          props: node.props,
+          children: node.children
+              .map((child) => _applyPatch(child, patch, dirtyFields))
+              .toList(),
+        );
+      case 'remove':
+        final target = patch['target'] as String;
+        if (node.id == target) {
+          return node;
+        }
+        return ServewrightNode(
+          id: node.id,
+          type: node.type,
+          props: node.props,
+          children: node.children
+              .where((child) => child.id != target)
+              .map((child) => _applyPatch(child, patch, dirtyFields))
+              .toList(),
+        );
       default:
         return node;
     }

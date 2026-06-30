@@ -1,0 +1,13 @@
+{
+  "primitive": "TextInput",
+  "root": {
+    "id": "email",
+    "type": "TextInput",
+    "props": { "label": "Email address", "placeholder": "you@example.com" }
+  },
+  "expect": {
+    "contains": ["Email address"],
+    "attributes": ["aria-label=\"Email address\""],
+    "semanticsLabels": ["Email address"]
+  }
+}

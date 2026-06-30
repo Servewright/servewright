@@ -218,6 +218,7 @@ class _TextInputWidgetState extends State<_TextInputWidget> {
         (widget.node.props['errors'] as List<dynamic>? ?? const []).cast<String>();
     final validating = binding?.isValidating(widget.node.id) ??
         widget.node.props['validating'] as bool? ??
+        widget.node.props['loading'] as bool? ??
         false;
 
     if (interactive) {
@@ -228,11 +229,13 @@ class _TextInputWidgetState extends State<_TextInputWidget> {
       key: ValueKey('text-input-${widget.node.id}'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label),
         TextField(
           controller: _controller,
           readOnly: !interactive,
-          decoration: InputDecoration(hintText: placeholder),
+          decoration: InputDecoration(
+            labelText: label.isEmpty ? 'Text field' : label,
+            hintText: placeholder,
+          ),
           onChanged: interactive
               ? (value) => binding!.onFieldChange(widget.node.id, widget.node, value)
               : null,

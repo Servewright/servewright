@@ -1,0 +1,9 @@
+{
+  "primitive": "Unknown",
+  "root": {
+    "id": "mystery",
+    "type": "FutureWidget",
+    "props": {}
+  },
+  "expect": { "contains": ["Unknown primitive: FutureWidget"] }
+}

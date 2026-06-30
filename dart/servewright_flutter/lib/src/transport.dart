@@ -37,7 +37,9 @@ class SseTransport implements ServewrightTransport {
             controller.add,
             onError: onError,
           );
-    }).catchError(onError ?? (_) {});
+    }).catchError((error) {
+      onError?.call(error);
+    });
 
     String? dataBuffer;
     return controller.stream.listen((line) {

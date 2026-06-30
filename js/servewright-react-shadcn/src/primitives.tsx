@@ -39,11 +39,12 @@ function TextInputPrimitive({ node }: { node: ServewrightNode }) {
     required?: boolean;
     errors?: string[];
     validating?: boolean;
+    loading?: boolean;
   };
 
   const value = binding?.values[node.id] ?? props.value ?? "";
   const errors = binding?.getFieldErrors(node.id) ?? props.errors ?? [];
-  const validating = binding?.isValidating(node.id) ?? props.validating ?? false;
+  const validating = binding?.isValidating(node.id) ?? props.validating ?? props.loading ?? false;
   const interactive = binding !== null;
 
   return createElement(
