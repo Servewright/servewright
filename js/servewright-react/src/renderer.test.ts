@@ -6,12 +6,45 @@ import {
   createRegistry,
   createRenderer,
   type PrimitiveComponent,
+  type Registry,
 } from "./renderer.js";
 import type { View } from "./types.js";
-import { registerShadcnPrimitives } from "@servewright/react-shadcn";
 
 const textComponent: PrimitiveComponent = (node) =>
   createElement("p", { "data-servewright-id": node.id }, String(node.props.content));
+
+function registerStubCompositionPrimitives(registry: Registry): void {
+  registry.register("Form", (node, ctx) =>
+    createElement(
+      "form",
+      { "data-servewright-type": "Form", "data-servewright-id": node.id },
+      ...ctx.renderChildren(node.children),
+    ),
+  );
+  registry.register("Group", (node, ctx) =>
+    createElement(
+      "fieldset",
+      { "data-servewright-type": "Group", "data-servewright-id": node.id },
+      node.props.label ? createElement("legend", null, String(node.props.label)) : null,
+      ...ctx.renderChildren(node.children),
+    ),
+  );
+  registry.register("TextInput", (node) =>
+    createElement(
+      "label",
+      { "data-servewright-type": "TextInput", "data-servewright-id": node.id },
+      String(node.props.label ?? ""),
+      createElement("input", { readOnly: true, defaultValue: String(node.props.value ?? "") }),
+    ),
+  );
+  registry.register("Button", (node) =>
+    createElement(
+      "button",
+      { "data-servewright-type": "Button", "data-servewright-id": node.id },
+      String(node.props.label ?? ""),
+    ),
+  );
+}
 
 const helloView: View = {
   servewrightVersion: "1.0",
@@ -56,7 +89,7 @@ describe("createRenderer", () => {
 
   it("renders nested composition hierarchy", () => {
     const registry = createRegistry();
-    registerShadcnPrimitives(registry);
+    registerStubCompositionPrimitives(registry);
     const renderer = createRenderer(registry);
 
     const compositeView: View = {

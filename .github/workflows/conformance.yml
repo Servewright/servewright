@@ -38,7 +38,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build renderers
-        run: pnpm --filter @servewright/react --filter @servewright/react-shadcn build
+        run: |
+          pnpm --filter @servewright/react build
+          pnpm --filter @servewright/react-shadcn build
 
       - name: Run React conformance
         run: pnpm --filter @servewright/conformance test

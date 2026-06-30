@@ -76,9 +76,6 @@ importers:
 
   js/servewright-react:
     devDependencies:
-      '@servewright/react-shadcn':
-        specifier: workspace:*
-        version: link:../servewright-react-shadcn
       '@types/node':
         specifier: ^22.15.0
         version: 22.20.0
@@ -99,10 +96,11 @@ importers:
         version: 5.9.3
 
   js/servewright-react-shadcn:
-    devDependencies:
+    dependencies:
       '@servewright/react':
         specifier: workspace:*
         version: link:../servewright-react
+    devDependencies:
       '@types/node':
         specifier: ^22.15.0
         version: 22.20.0

@@ -23,12 +23,13 @@
     "build": "tsc -p tsconfig.json",
     "test": "rm -rf dist-test && tsc -p tsconfig.test.json && node --test dist-test/**/*.test.js"
   },
+  "dependencies": {
+    "@servewright/react": "workspace:*"
+  },
   "peerDependencies": {
-    "@servewright/react": "workspace:*",
     "react": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@servewright/react": "workspace:*",
     "@types/node": "^22.15.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",

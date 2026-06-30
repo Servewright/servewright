@@ -7,13 +7,28 @@ import {
   createRegistry,
   createRenderer,
   type BindingContextValue,
+  type PrimitiveComponent,
 } from "./index.js";
-import { registerShadcnPrimitives } from "@servewright/react-shadcn";
+
+const textInputStub: PrimitiveComponent = (node) =>
+  createElement(
+    "label",
+    { "data-servewright-type": "TextInput", "data-servewright-id": node.id },
+    String(node.props.label ?? ""),
+    createElement("input", { readOnly: true }),
+    (node.props.errors as string[] | undefined)?.length
+      ? createElement(
+          "ul",
+          { "data-servewright-errors": node.id },
+          ...(node.props.errors as string[]).map((error) => createElement("li", { key: error }, error)),
+        )
+      : null,
+  );
 
 describe("interactive primitives", () => {
   it("renders server errors under the matching field", () => {
     const registry = createRegistry();
-    registerShadcnPrimitives(registry);
+    registry.register("TextInput", textInputStub);
     const renderer = createRenderer(registry);
 
     const binding: BindingContextValue = {
