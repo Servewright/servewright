@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:servewright_flutter/src/action_client.dart';
 import 'package:servewright_flutter/src/binding.dart';
 import 'package:servewright_flutter/src/renderer.dart';
+import 'package:servewright_flutter/src/transition.dart';
+import 'package:servewright_flutter/src/transport.dart';
 import 'package:servewright_flutter/src/types.dart';
 
 class ServewrightBinding extends InheritedWidget {
@@ -27,14 +31,23 @@ class BindingController extends ChangeNotifier {
     required ServewrightView initialView,
     required Registry registry,
     ActionClient? actionClient,
+    ServewrightTransport? transport,
   })  : _view = initialView,
         _registry = registry,
         _actionClient = actionClient ?? ActionClient(),
-        _values = BindingTree.extractInitialValues(initialView.root);
+        _transport = transport ?? ImmediateTransport(const []),
+        _values = BindingTree.extractInitialValues(initialView.root) {
+    _transportSubscription = _transport.connect(
+      _view.screen,
+      onTransition: applyTransition,
+    );
+  }
 
   ServewrightView _view;
   final Registry _registry;
   final ActionClient _actionClient;
+  final ServewrightTransport _transport;
+  StreamSubscription<String>? _transportSubscription;
   Map<String, String> _values;
   final Set<String> _forceOnChange = {};
   final Set<String> _validating = {};
@@ -120,11 +133,38 @@ class BindingController extends ChangeNotifier {
   }
 
   Future<void> _dispatch(ServewrightAction action) async {
-    final nextView = await _actionClient.postAction(action);
-    _view = nextView;
-    _values = BindingTree.extractInitialValues(nextView.root);
-    _forceOnChange.clear();
+    final response = await _actionClient.postAction(action);
+    if (response.transition != null) {
+      applyTransition(response.transition!);
+      return;
+    }
+    if (response.view != null) {
+      _view = response.view!;
+      _values = BindingTree.extractInitialValues(_view.root);
+      _forceOnChange.clear();
+      notifyListeners();
+    }
+  }
+
+  void applyTransition(ServewrightTransition transition) {
+    try {
+      final dirty = TransitionApplier.collectDirtyFields(_view, _values);
+      _view = TransitionApplier.apply(_view, transition, dirtyFields: dirty);
+      notifyListeners();
+    } on TransitionDesyncError {
+      _resync();
+    }
+  }
+
+  Future<void> _resync() async {
+    _view = await _actionClient.fetchView(_view.screen);
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _transportSubscription?.cancel();
+    super.dispose();
   }
 
   Widget render() {

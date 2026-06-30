@@ -2,7 +2,83 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://servewright.io/spec/protocol/transition.schema.json",
   "title": "Transition",
-  "description": "Transition serveur → client. Contrat à compléter en phase ultérieure.",
+  "description": "Transition incrémentale serveur → client. Patches adressés par id de noeud.",
   "type": "object",
-  "additionalProperties": false
+  "required": ["basedOn", "stateVersion", "patches"],
+  "properties": {
+    "basedOn": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "stateVersion client attendue au moment de l'application."
+    },
+    "stateVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Nouvelle version d'état après application des patchs."
+    },
+    "patches": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/patch" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "patch": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["op", "target", "node"],
+          "properties": {
+            "op": { "const": "replace" },
+            "target": { "type": "string" },
+            "node": { "type": "object" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "parent", "index", "node"],
+          "properties": {
+            "op": { "const": "insert" },
+            "parent": { "type": "string" },
+            "index": { "type": "integer", "minimum": 0 },
+            "node": { "type": "object" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "target"],
+          "properties": {
+            "op": { "const": "remove" },
+            "target": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "target", "errors"],
+          "properties": {
+            "op": { "const": "setError" },
+            "target": { "type": "string" },
+            "errors": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "target", "loading"],
+          "properties": {
+            "op": { "const": "setLoading" },
+            "target": { "type": "string" },
+            "loading": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
 }

@@ -14,6 +14,19 @@ public final class NodeTree {
     private NodeTree() {
     }
 
+    public static Optional<Node> findNodeById(Node root, String id) {
+        if (root.id().equals(id)) {
+            return Optional.of(root);
+        }
+        for (Node child : root.children()) {
+            Optional<Node> found = findNodeById(child, id);
+            if (found.isPresent()) {
+                return found;
+            }
+        }
+        return Optional.empty();
+    }
+
     public static Optional<Node> findFormByActionTarget(Node root, String target) {
         if ("Form".equals(root.type())) {
             Object actionTarget = root.props().get("actionTarget");

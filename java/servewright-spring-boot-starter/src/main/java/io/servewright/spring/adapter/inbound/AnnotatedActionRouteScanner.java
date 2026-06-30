@@ -5,6 +5,7 @@ import io.servewright.core.application.port.ActionHandler;
 import io.servewright.core.application.port.AsyncValidationHandler;
 import io.servewright.core.domain.Action;
 import io.servewright.core.domain.ActionResponse;
+import io.servewright.core.domain.Transition;
 import io.servewright.core.domain.View;
 import io.servewright.spring.annotation.OnAction;
 import io.servewright.spring.annotation.OnAsyncValidation;
@@ -63,11 +64,14 @@ final class ReflectiveActionHandler implements ActionHandler {
         if (result instanceof ActionResponse response) {
             return response;
         }
+        if (result instanceof Transition transition) {
+            return ActionResponse.ofTransition(transition);
+        }
         if (result instanceof View view) {
-            return new ActionResponse(view);
+            return ActionResponse.ofView(view);
         }
         throw new IllegalStateException(
-                "Action handler must return View or ActionResponse, got: "
+                "Action handler must return View, Transition, or ActionResponse, got: "
                         + (result == null ? "null" : result.getClass().getName()));
     }
 }

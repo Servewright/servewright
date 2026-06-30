@@ -8,7 +8,7 @@ import {
   useState,
   type ReactElement,
 } from "react";
-import { postAction } from "./action.js";
+import { fetchView, postAction } from "./action.js";
 import {
   collectFormPayload,
   effectiveTrigger,
@@ -23,18 +23,27 @@ import {
   type ServewrightViewOptions,
 } from "./binding-context.js";
 import { createRegistry, createRenderer, type Registry } from "./renderer.js";
-import type { Action, View } from "./types.js";
+import { SseTransport, type Transport } from "./transport.js";
+import {
+  TransitionDesyncError,
+  applyTransition,
+  collectDirtyFields,
+} from "./transition.js";
+import type { Action, Transition, View } from "./types.js";
 
 export interface ServewrightViewProps extends ServewrightViewOptions {
   view: View;
   registry: Registry;
+  transport?: Transport;
 }
 
 export function ServewrightView({
   view: initialView,
   registry,
   actionUrl = "/servewright/action",
+  viewUrl = "/servewright/view",
   onViewChange,
+  transport = new SseTransport(),
 }: ServewrightViewProps): ReactElement {
   const [view, setView] = useState(initialView);
   const [values, setValues] = useState<Record<string, string>>(() =>
@@ -53,21 +62,50 @@ export function ServewrightView({
 
   const renderer = useMemo(() => createRenderer(registry), [registry]);
 
-  const updateView = useCallback(
-    (next: View) => {
-      setView(next);
-      setValues(extractInitialValues(next.root));
-      onViewChange?.(next);
+  const resyncView = useCallback(async () => {
+    const fresh = await fetchView(viewUrl, view.screen);
+    setView(fresh);
+    onViewChange?.(fresh);
+  }, [onViewChange, view.screen, viewUrl]);
+
+  const applyServerTransition = useCallback(
+    (transition: Transition) => {
+      try {
+        const dirtyFields = collectDirtyFields(view, values);
+        const next = applyTransition(view, transition, dirtyFields);
+        setView(next);
+        onViewChange?.(next);
+      } catch (error) {
+        if (error instanceof TransitionDesyncError) {
+          void resyncView();
+        } else {
+          throw error;
+        }
+      }
     },
-    [onViewChange],
+    [onViewChange, resyncView, values, view],
   );
+
+  useEffect(() => {
+    return transport.connect(view.screen, {
+      onTransition: applyServerTransition,
+    });
+  }, [applyServerTransition, transport, view.screen]);
 
   const dispatchAction = useCallback(
     async (action: Action) => {
       const response = await postAction(actionUrl, action);
-      updateView(response.view);
+      if (response.transition) {
+        applyServerTransition(response.transition);
+        return;
+      }
+      if (response.view) {
+        setView(response.view);
+        setValues(extractInitialValues(response.view.root));
+        onViewChange?.(response.view);
+      }
     },
-    [actionUrl, updateView],
+    [actionUrl, applyServerTransition, onViewChange],
   );
 
   const runAsyncValidation = useCallback(

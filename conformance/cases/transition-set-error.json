@@ -1,0 +1,31 @@
+{
+  "name": "transition setError patch",
+  "initialView": {
+    "servewrightVersion": "1.0",
+    "schemaVersion": "0.1.0",
+    "screen": "demo-form",
+    "stateVersion": 0,
+    "root": {
+      "id": "signup-form",
+      "type": "Form",
+      "props": { "actionTarget": "signup" },
+      "children": [
+        {
+          "id": "email",
+          "type": "TextInput",
+          "props": { "label": "Email", "value": "" }
+        }
+      ]
+    }
+  },
+  "transitions": [
+    {
+      "basedOn": 0,
+      "stateVersion": 1,
+      "patches": [
+        { "op": "setError", "target": "email", "errors": ["Invalid format"] }
+      ]
+    }
+  ],
+  "expect": { "contains": ["Invalid format"] }
+}

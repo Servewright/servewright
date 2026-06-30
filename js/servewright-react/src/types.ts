@@ -9,7 +9,22 @@ export interface Action {
 }
 
 export interface ActionResponse {
-  view: View;
+  view?: View;
+  transition?: Transition;
+}
+
+export interface Transition {
+  basedOn: number;
+  stateVersion: number;
+  patches: Array<{
+    op: "replace" | "insert" | "remove" | "setError" | "setLoading";
+    target?: string;
+    parent?: string;
+    index?: number;
+    node?: ServewrightNode;
+    errors?: string[];
+    loading?: boolean;
+  }>;
 }
 
 export interface View {

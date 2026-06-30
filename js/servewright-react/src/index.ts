@@ -8,6 +8,7 @@ export type {
   ActionResponse,
   TextInputProps,
   FieldTrigger,
+  Transition,
 } from "./types.js";
 export {
   createRegistry,
@@ -28,7 +29,19 @@ export {
   extractInitialValues,
   effectiveTrigger,
 } from "./binding.js";
-export { postAction } from "./action.js";
+export { postAction, fetchView } from "./action.js";
+export {
+  applyTransition,
+  collectDirtyFields,
+  TransitionDesyncError,
+  type Patch,
+} from "./transition.js";
+export {
+  SseTransport,
+  ImmediateTransport,
+  type Transport,
+  type TransportHandlers,
+} from "./transport.js";
 export {
   ServewrightBindingContext,
   useServewrightBinding,

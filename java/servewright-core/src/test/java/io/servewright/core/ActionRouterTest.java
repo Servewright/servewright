@@ -20,7 +20,7 @@ class ActionRouterTest {
     @Test
     void routesToRegisteredHandler() {
         ActionRouter router = ActionRouter.builder()
-                .on("submit", "signup", action -> new ActionResponse(
+                .on("submit", "signup", action -> ActionResponse.ofView(
                         View.of(action.screen(), Node.text("ok", "Done"))))
                 .build();
 
@@ -32,7 +32,7 @@ class ActionRouterTest {
 
     @Test
     void duplicateRegistrationFailsAtBuild() {
-        ActionHandler handler = action -> new ActionResponse(View.of("x", Node.text("x", "x")));
+        ActionHandler handler = action -> ActionResponse.ofView(View.of("x", Node.text("x", "x")));
 
         assertThrows(DuplicateActionHandlerException.class, () -> ActionRouter.builder()
                 .on("submit", "signup", handler)

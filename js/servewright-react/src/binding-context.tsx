@@ -1,5 +1,6 @@
 import { createContext, useContext } from "react";
 import type { Action, View } from "./types.js";
+import type { Transport } from "./transport.js";
 
 export interface BindingContextValue {
   values: Record<string, string>;
@@ -21,7 +22,9 @@ export function useServewrightBinding(): BindingContextValue | null {
 
 export interface ServewrightViewOptions {
   actionUrl?: string;
+  viewUrl?: string;
   onViewChange?: (view: View) => void;
+  transport?: Transport;
 }
 
 export type { Action, View };

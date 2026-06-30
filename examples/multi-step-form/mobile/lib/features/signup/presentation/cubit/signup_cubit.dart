@@ -36,7 +36,13 @@ class SignupCubit extends Cubit<SignupState> {
           BindingController(
             initialView: view,
             registry: registry,
-            actionClient: ActionClient(actionUrl: 'http://localhost:8080/servewright/action'),
+            actionClient: ActionClient(
+              actionUrl: 'http://localhost:8080/servewright/action',
+              viewUrl: 'http://localhost:8080/servewright/view',
+            ),
+            transport: SseTransport(
+              streamUrl: 'http://localhost:8080/servewright/stream',
+            ),
           ),
         ),
       );

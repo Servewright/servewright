@@ -2,6 +2,8 @@ package io.servewright.spring;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.servewright.core.application.ViewState;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,6 +26,14 @@ class ActionControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private ViewState viewState;
+
+    @BeforeEach
+    void resetViewState() {
+        viewState.reset("demo-form");
+    }
+
     @Test
     void submitWithValidPayloadExecutesHandler() throws Exception {
         String body = """
@@ -45,7 +55,9 @@ class ActionControllerIntegrationTest {
                 .getContentAsString();
 
         JsonNode document = objectMapper.readTree(response);
-        assertTrue(document.get("view").get("root").get("props").get("content").asText().startsWith("Registered"));
+        JsonNode transition = document.get("transition");
+        assertTrue(transition.has("stateVersion"));
+        assertTrue(transition.get("stateVersion").asInt() > 0);
     }
 
     @Test
@@ -68,17 +80,9 @@ class ActionControllerIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        JsonNode errors = objectMapper.readTree(response)
-                .get("view")
-                .get("root")
-                .get("children")
-                .get(0)
-                .get("children")
-                .get(0)
-                .get("props")
-                .get("errors");
-
-        assertTrue(errors.isArray() && errors.size() > 0);
+        JsonNode patches = objectMapper.readTree(response).get("transition").get("patches");
+        assertTrue(patches.isArray() && patches.size() > 0);
+        assertTrue("setError".equals(patches.get(0).get("op").asText()));
     }
 
     @Test
@@ -101,26 +105,17 @@ class ActionControllerIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        JsonNode errors = objectMapper.readTree(response)
-                .get("view")
-                .get("root")
-                .get("children")
-                .get(0)
-                .get("children")
-                .get(1)
-                .get("props")
-                .get("errors");
-
-        assertTrue(errors.isArray() && errors.size() > 0);
+        JsonNode patches = objectMapper.readTree(response).get("transition").get("patches");
+        assertTrue(patches.isArray() && patches.size() > 0);
     }
 
-  @Test
-  void malformedActionRequestReturnsClientError() throws Exception {
-    mockMvc.perform(post("/servewright/action")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{}"))
-            .andExpect(status().isBadRequest());
-  }
+    @Test
+    void malformedActionRequestReturnsClientError() throws Exception {
+        mockMvc.perform(post("/servewright/action")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+    }
 
     @SpringBootApplication
     static class TestApplication {
